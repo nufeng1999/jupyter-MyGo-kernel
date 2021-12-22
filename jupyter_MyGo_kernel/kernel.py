@@ -1258,8 +1258,8 @@ class GoKernel(MyKernel):
                     outfile=cflags[cflags.index('-o')+1]
                     if outfile.startswith('-'):
                         outfile=binary_filename
-                        del cflags[cflags.index('-o')+1]
-                        del cflags[cflags.index('-o')]
+                    del cflags[cflags.index('-o')+1]
+                    del cflags[cflags.index('-o')]
             binary_filename=outfile
             index+=1
         args=[]
