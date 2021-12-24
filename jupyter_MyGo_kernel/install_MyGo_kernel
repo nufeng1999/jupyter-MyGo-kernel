@@ -18,7 +18,7 @@ kernel_json = {
         "{connection_file}"
     ],
     "display_name": "MyGo",
-    "language": "Go"
+    "language": "GoLang"
 }
 
 
@@ -43,7 +43,7 @@ def _is_root():
 
 def main(argv=[]):
     parser = argparse.ArgumentParser(
-        description='Install KernelSpec for C Kernel'
+        description='Install KernelSpec for Go Kernel'
     )
     prefix_locations = parser.add_mutually_exclusive_group()
 
