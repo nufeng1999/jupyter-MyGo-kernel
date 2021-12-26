@@ -798,16 +798,16 @@ echo "OK"
             cstr=''
             for x in cmd: cstr+=x+" "
             self._logln(cstr)
-            if(outencode==None or len(outencode)<0):
+            if(magics!=None and (outencode==None or len(outencode)<0)):
                 outencode=self.get_outencode(magics)
-            if(len(outencode)<0):
+            if(outencode==None or len(outencode)<0):
                 outencode='UTF-8'
             return RealTimeSubprocess(cmd,
                                   self._write_to_stdout,
                                   self._write_to_stderr,
                                   self._read_from_stdin,cwd,shell,env,self,outencode=outencode)
         except Exception as e:
-            self._write_to_stdout("RealTimeSubprocess err:"+str(e))
+            self._logln("RealTimeSubprocess err:"+str(e),3)
             raise
     def getossubsys(self):
         uname=''
@@ -1315,7 +1315,7 @@ class GoKernel(MyKernel):
         else:
             args = ['go','build']+ ['-o', binary_filename]+[source_filename] + cflags  + ldflags
         # self._log(''.join((' '+ str(s) for s in args))+"\n")
-        return self.create_jupyter_subprocess(args,env=env),binary_filename,args
+        return self.create_jupyter_subprocess(args,env=env,magics=magics),binary_filename,args
     def _exec_goc_(self,source_filename,magics):
         self._logln('Generating executable file')
         with self.new_temp_file(suffix='.out') as binary_file:
