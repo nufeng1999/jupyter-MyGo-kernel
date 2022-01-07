@@ -100,30 +100,30 @@ class GoKernel(MyKernel):
             binary_filename=outfile
             index+=1
         args=[]
-        if magics!=None and len(self.addkey2dict(magics,'ccompiler'))>0:
+        if magics!=None and len(self.mymagics.addkey2dict(magics,'ccompiler'))>0:
             args = magics['ccompiler'] + orig_cflags +[source_filename] + orig_ldflags
         else:
             args = ['go','build']+ ['-o', binary_filename]+[source_filename] + cflags  + ldflags
         # self._log(''.join((' '+ str(s) for s in args))+"\n")
-        return self.create_jupyter_subprocess(args,env=env,magics=magics),binary_filename,args
+        return self.mymagics.create_jupyter_subprocess(args,env=env,magics=magics),binary_filename,args
     def _exec_goc_(self,source_filename,magics):
-        self._logln('Generating executable file')
-        with self.new_temp_file(suffix='.out') as binary_file:
+        self.mymagics._logln('Generating executable file')
+        with self.mymagics.new_temp_file(suffix='.out') as binary_file:
             magics['status']='compiling'
             p,outfile,gcccmd = self.compile_with_goc(
                 source_filename, 
                 binary_file.name,
-                self.get_magicsSvalue(magics,'cflags'),
-                self.get_magicsSvalue(magics,'ldflags'),
-                self.get_magicsbykey(magics,'env'),
+                self.mymagics.get_magicsSvalue(magics,'cflags'),
+                self.mymagics.get_magicsSvalue(magics,'ldflags'),
+                self.mymagics.get_magicsbykey(magics,'env'),
                 magics=magics)
             returncode=p.wait_end(magics)
             p.write_contents()
             magics['status']='compiling'
             binary_file.name=os.path.join(os.path.abspath(''),outfile)
             if returncode != 0:  # Compilation failed
-                self._logln(''.join((str(s) for s in gcccmd))+"\n",3)
-                self._logln("Go build exited with code {}, the executable will not be executed".format(returncode),3)
+                self.mymagics._logln(''.join((str(s) for s in gcccmd))+"\n",3)
+                self.mymagics._logln("Go build exited with code {}, the executable will not be executed".format(returncode),3)
                 # delete source files before exit
                 os.remove(source_filename)
                 os.remove(binary_file.name)
@@ -213,7 +213,7 @@ class GoKernel(MyKernel):
         bcancel_exec=False
         retinfo=self.mymagics.get_retinfo()
         ############# run gdb and send command begin
-        if len(self.addkey2dict(magics,'rungdb'))>0:
+        if len(self.mymagics.addkey2dict(magics,'rungdb'))>0:
             bcancel_exec=True
             retinfo= self.mymagics.replgdb_sendcmd(code,silent, store_history,
                 user_expressions, allow_stdin)
